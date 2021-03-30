@@ -1,33 +1,76 @@
 <template>
   <Layout>
-
-    <!-- Learn how to use images here: https://gridsome.org/docs/images -->
-    <g-image alt="Example image" src="~/favicon.png" width="135" />
-
-    <h1>Hello, world!</h1>
-
-    <p>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit. Pariatur excepturi labore tempore expedita, et iste tenetur suscipit explicabo! Dolores, aperiam non officia eos quod asperiores
-    </p>
-
-    <p class="home-links">
-      <a href="https://gridsome.org/docs/" target="_blank" rel="noopener">Gridsome Docs</a>
-      <a href="https://github.com/gridsome/gridsome" target="_blank" rel="noopener">GitHub</a>
-    </p>
-
+    <div class="container">
+      <Banner :title="pageInfo.title" :subTitle="pageInfo.subtitle" />
+      <projectListPage :projectList="projectList" />
+    </div>
+    <journalListPage :journalList="journalList" />
   </Layout>
 </template>
 
-<script>
-export default {
-  metaInfo: {
-    title: 'Hello, world!'
+<page-query>
+query {
+  forstry: allStrapiForstry {
+    edges {
+      node {
+        id
+        title
+        subtitle
+      }
+    }
+  }
+  projectList: allStrapiProjectpost (sort: { order: ASC}){
+    edges {
+      node {
+        id
+        title
+        cover {
+          url
+        }
+        categories {
+          id
+          title
+        }
+      }
+    }
+  }
+  journalList: allStrapiJournalpost {
+    edges {
+      node {
+        id
+        title
+      }
+    }
   }
 }
-</script>
+</page-query>
 
-<style>
-.home-links a {
-  margin-right: 1rem;
-}
-</style>
+<script>
+import Banner from "../components/banner.vue";
+import projectListPage from "../components/projectList.vue";
+import journalListPage from "../components/journalList.vue";
+export default {
+  name: "HomePage",
+  metaInfo() {
+    return {
+      title: "Home",
+    };
+  },
+  components: {
+    Banner,
+    projectListPage,
+    journalListPage,
+  },
+  computed: {
+    pageInfo() {
+      return this.$page.forstry.edges[0].node;
+    },
+    projectList() {
+      return this.$page.projectList.edges;
+    },
+    journalList() {
+      return this.$page.journalList.edges;
+    },
+  },
+};
+</script>
